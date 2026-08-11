@@ -1,7 +1,8 @@
 from typing import Annotated, List, Literal
 from fastapi import FastAPI, HTTPException, Path, Query, status
-
 from fastapi.responses import PlainTextResponse
+import uvicorn
+
 from pwdgrpd.models import GrpEntry, PwdEntry, PwdGrpDatabase
 from pwdgrpd.conf import config
 
@@ -47,3 +48,12 @@ async def getgrgid(gid: Annotated[int, Path()], t: ret_type = 'json') -> GrpEntr
 async def initgroups(name: Annotated[str, Path()], t: ret_type = 'json') -> List[str] | PlainTextResponse:
 	try: return PlainTextResponse(','.join(db.initgroups(name))) if t == 'raw' else db.initgroups(name)
 	except Exception as e: raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(e))
+
+
+if __name__ == '__main__':
+	uvicorn.run(
+		'main:app',
+		host=config.host,
+		port=config.port,
+		workers=config.workers,
+	)

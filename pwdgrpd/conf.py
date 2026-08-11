@@ -14,6 +14,7 @@ class Config(BaseSettings):
 
 	host: str = Field('0.0.0.0')
 	port: int = Field(8000)
+	workers: int = Field(1)
 	source: Literal['raw', 'json'] = Field('raw')
 	passwd_file: Optional[str] = Field(None)
 	group_file: Optional[str] = Field(None)

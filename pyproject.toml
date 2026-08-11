@@ -9,7 +9,8 @@ version = "1.0.0"
 description = 'RESTful Unix passwd & group server (pwd & grp daemon)'
 readme = "README.md"
 requires-python = ">=3.12"
-license = "MIT"
+license = "GPL-3.0-or-later"
+license-files = ["LICEN[CS]E.*"]
 keywords = ['unix', 'passwd', 'group', 'nss']
 authors = [
   { name = "Leo", email = "i@hardrain980.com" },

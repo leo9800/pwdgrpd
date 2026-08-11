@@ -38,7 +38,7 @@ async def getgrnam(name: Annotated[str, Path()], t: ret_type = 'json') -> GrpEnt
 	try: return PlainTextResponse(db.getgrnam(name).to_group()) if t == 'raw' else db.getgrnam(name)
 	except Exception as e: raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(e))
 
-@app.get('/getgrgid/{uid}', summary='Get group entry by gid', response_model=GrpEntry | str)
+@app.get('/getgrgid/{gid}', summary='Get group entry by gid', response_model=GrpEntry | str)
 async def getgrgid(gid: Annotated[int, Path()], t: ret_type = 'json') -> GrpEntry | PlainTextResponse:
 	try: return PlainTextResponse(db.getgrgid(gid).to_group()) if t == 'raw' else db.getgrgid(gid)
 	except Exception as e: raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(e))

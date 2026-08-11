@@ -49,11 +49,12 @@ async def initgroups(name: Annotated[str, Path()], t: ret_type = 'json') -> List
 	try: return PlainTextResponse(','.join(db.initgroups(name))) if t == 'raw' else db.initgroups(name)
 	except Exception as e: raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(e))
 
-
-if __name__ == '__main__':
+def run():
 	uvicorn.run(
-		'main:app',
+		'pwdgrpd.main:app',
 		host=config.host,
 		port=config.port,
 		workers=config.workers,
 	)
+
+if __name__ == '__main__': run()

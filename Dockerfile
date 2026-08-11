@@ -13,6 +13,6 @@ RUN pip wheel \
 FROM python:3-alpine AS product
 RUN --mount=type=cache,target=/var/cache/apk \
 	apk update && apk upgrade
-RUN --mount=type=bind,source=/wheels,target=/wheels,from=app-builder \
+RUN --mount=type=bind,source=/wheels,target=/wheels,from=builder \
 	pip install --no-cache --no-index /wheels/*
 CMD ["pwdgrpd"]

@@ -1,0 +1,7 @@
+alice:x:5000:
+bob:x:5001:
+eve:x:5002:
+malloy:x:5003:
+foo:x:7000:alice,bob
+bar:x:7001:bob,eve
+boo:x:7002:alice,bob,malloy

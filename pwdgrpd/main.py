@@ -44,9 +44,11 @@ async def getgrgid(gid: Annotated[int, Path()], t: ret_type = 'json') -> GrpEntr
 	try: return PlainTextResponse(db.getgrgid(gid).to_group()) if t == 'raw' else db.getgrgid(gid)
 	except Exception as e: raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(e))
 
-@app.get('/initgroups/{name}', summary='Get additional groups names by user name', response_model=List[str] | str)
-async def initgroups(name: Annotated[str, Path()], t: ret_type = 'json') -> List[str] | PlainTextResponse:
-	try: return PlainTextResponse(','.join(db.initgroups(name))) if t == 'raw' else db.initgroups(name)
+@app.get('/initgroups/{name}', summary='Get additional groups names by user name', response_model=List[int] | List[str] | str)
+async def initgroups(name: Annotated[str, Path()], t: ret_type = 'json', b: Annotated[Literal['nam', 'gid'], Query()] = 'nam') -> List[int] | List[str] | PlainTextResponse:
+	try:
+		l = [i.gr_name for i in db.initgroups(name)] if b == 'nam' else [i.gr_gid for i in db.initgroups(name)]
+		return PlainTextResponse(','.join([str(i) for i in l])) if t == 'raw' else l
 	except Exception as e: raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(e))
 
 def run():

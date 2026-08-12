@@ -1,5 +1,5 @@
 from functools import cached_property
-from typing import Dict, List, Self
+from typing import Dict, List, Self, Tuple
 from pydantic import BaseModel, Field, computed_field
 
 
@@ -70,11 +70,11 @@ class PwdGrpDatabase(BaseModel):
 
 	@computed_field
 	@cached_property
-	def member_of(self) -> Dict[str, List[str]]:
+	def member_of(self) -> Dict[str, List[GrpEntry]]:
 		d = {i.pw_name: [] for i in self.pwd}
 		for i in self.grp:
 			for j in i.gr_mem:
-				d[j].append(i.gr_name)
+				d[j].append(i)
 		return d
 
 	def getpwall(self) -> List[PwdEntry]:
@@ -107,6 +107,6 @@ class PwdGrpDatabase(BaseModel):
 				return i
 		assert False, f'no group with gid {gid} found'
 
-	def initgroups(self, name: str) -> List[str]:
+	def initgroups(self, name: str) -> List[GrpEntry]:
 		assert name in self.member_of, f'no user named {name} found'
 		return self.member_of[name]

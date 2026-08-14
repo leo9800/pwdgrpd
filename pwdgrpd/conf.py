@@ -30,4 +30,4 @@ class Config(BaseSettings):
 				'passwd_file and group_file must be both not null when use raw files as source'
 		return self
 
-config = Config() # type: ignore
+config = Config() # pyright: ignore[reportCallIssue]

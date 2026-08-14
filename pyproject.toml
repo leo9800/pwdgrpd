@@ -23,6 +23,7 @@ classifiers = [
   "Programming Language :: Python :: Implementation :: PyPy",
 ]
 dependencies = [
+  "aiofiles~=25.1",
   "fastapi~=0.141",
   "pydantic-settings~=2.15",
   "uvicorn~=0.52",

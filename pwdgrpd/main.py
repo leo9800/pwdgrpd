@@ -1,17 +1,30 @@
+from contextlib import asynccontextmanager
 from typing import Annotated, List, Literal
 from fastapi import FastAPI, HTTPException, Path, Query, status
 from fastapi.responses import PlainTextResponse
+from aiofiles import open
 import uvicorn
 
 from pwdgrpd.models import GrpEntry, PwdEntry, PwdGrpDatabase
 from pwdgrpd.conf import config
 
-if config.source == 'json':
-	with open(config.json_file, 'r', encoding='utf-8') as f: db = PwdGrpDatabase.model_validate_json(f.readall())  # type: ignore
-if config.source == 'raw': db = PwdGrpDatabase.from_passwd_group(config.passwd_file, config.group_file)  # type: ignore
-assert isinstance(db, PwdGrpDatabase)  # type: ignore
+db: PwdGrpDatabase
 
-app = FastAPI(title='pwdgrpd', description='RESTful passwd & group server (pwd-grp-daemon)')
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+	global db
+	match config.source:
+		case 'json':
+			assert config.json_file is not None  # makes pyright happy ...
+			async with open(config.json_file, 'r', encoding='utf-8') as f: db = PwdGrpDatabase.model_validate_json(await f.readall())
+		case 'raw':
+			assert config.passwd_file is not None and config.group_file is not None  # makes pyright happy ...
+			db = PwdGrpDatabase.from_passwd_group(config.passwd_file, config.group_file)
+	assert db is not None
+	yield
+	del(db)
+
+app = FastAPI(title='pwdgrpd', description='RESTful passwd & group server (pwd-grp-daemon)', lifespan=lifespan)
 ret_type = Annotated[Literal['json', 'raw'], Query(name='type')]
 
 @app.get('/getpwall', summary='Get all passwd entries', response_model=List[PwdEntry] | str)

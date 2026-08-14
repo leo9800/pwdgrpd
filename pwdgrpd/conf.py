@@ -1,4 +1,4 @@
-from typing import Literal, Optional
+from typing import List, Literal
 
 from pydantic import Field, model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
@@ -16,10 +16,12 @@ class Config(BaseSettings):
 	port: int = Field(8000)
 	workers: int = Field(1)
 	source: Literal['raw', 'json'] = Field('raw')
-	passwd_file: Optional[str] = Field(None)
-	group_file: Optional[str] = Field(None)
-	json_file: Optional[str] = Field(None)
+	passwd_file: str | None = Field(None)
+	group_file: str | None = Field(None)
+	json_file: str | None = Field(None)
 	allow_enumeration: bool = Field(False)
+	proxy_headers: bool = Field(False)
+	forwarded_allow_ips: List[str] | str | None = Field('127.0.0.1') 
 
 	@model_validator(mode='after')
 	def validate_config(self):

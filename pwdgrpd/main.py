@@ -70,6 +70,8 @@ def run():
 		host=config.host,
 		port=config.port,
 		workers=config.workers,
+		proxy_headers=config.proxy_headers,
+		forwarded_allow_ips=config.forwarded_allow_ips,
 	)
 
 if __name__ == '__main__': run()
